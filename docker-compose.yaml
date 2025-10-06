@@ -1,0 +1,40 @@
+services:
+  db:
+    image: postgres:13
+    environment:
+      POSTGRES_DB: cinema
+      POSTGRES_USER: postgres
+      POSTGRES_PASSWORD: postgres
+    volumes:
+      - postgres_data:/var/lib/postgresql/data
+
+  backend:
+    build:
+      context: ./back        # <--- контекст теперь папка back
+      dockerfile: Dockerfile
+    volumes:
+      - static_volume:/app/staticfiles
+      - media_volume:/app/media
+    expose:
+      - "8000"
+    depends_on:
+      - db
+    env_file:
+      - .env
+
+  nginx:
+    build:
+      context: .
+      dockerfile: front/Dockerfile
+    ports:
+      - "80:80"
+    depends_on:
+      - backend
+    volumes:
+      - static_volume:/usr/share/nginx/html/static
+      - media_volume:/usr/share/nginx/html/media
+
+volumes:
+  postgres_data:
+  static_volume:
+  media_volume:
