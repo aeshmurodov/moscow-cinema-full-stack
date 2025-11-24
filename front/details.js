@@ -3,7 +3,7 @@ document.addEventListener('DOMContentLoaded', () => {
   const ROWS = 9;
   const COLS = 15;
   const PRICE = 440;
-
+  const MIN_TOTAL = 500; // минимальная сумма покупки
 
   // --- Auth Helper for Tickets ---
   const API_BASE_URL = 'api'; // IMPORTANT: Adjust if your backend runs on a different port/host
@@ -148,9 +148,21 @@ document.addEventListener('DOMContentLoaded', () => {
 
   function updateSummary(){
     const selected = hall.querySelectorAll('.seat.selected').length;
+    const total = selected * PRICE;
+
     selectedCountEl.textContent = selected;
-    totalEl.textContent = `${selected * PRICE} ₽`;
-    payBtn.disabled = selected === 0;
+    totalEl.textContent = `${total} ₽`;
+
+    const isEnough = total >= MIN_TOTAL;
+
+    // Если сумма меньше 500 ₽ — запрещаем оплату
+    payBtn.disabled = !isEnough;
+
+    if (!isEnough) {
+      payBtn.title = `Минимальная сумма покупки — ${MIN_TOTAL} ₽`;
+    } else {
+      payBtn.title = '';
+    }
   }
 
 
