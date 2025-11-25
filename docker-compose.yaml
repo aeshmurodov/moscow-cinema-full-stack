@@ -25,7 +25,7 @@ services:
   nginx:
     build:
       context: ./front
-      dockerfile: front/Dockerfile
+      dockerfile: Dockerfile
     ports:
       - "80:80"
     depends_on:
