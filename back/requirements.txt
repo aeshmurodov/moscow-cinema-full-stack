@@ -9,3 +9,4 @@ dj-database-url
 pytest
 pytest-django
 pytest-mock
+tzdata
