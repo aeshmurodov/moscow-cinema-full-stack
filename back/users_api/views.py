@@ -28,4 +28,4 @@ class RegisterView(APIView):
             'user': serializer.data,
             'refresh': str(refresh),
             'access': str(refresh.access_token)
-        }, status=status.HTTP_201_CREATED)
+        }, status=status.HTTP_500_CREATED)
