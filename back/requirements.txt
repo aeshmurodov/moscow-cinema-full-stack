@@ -8,4 +8,9 @@ psycopg2-binary
 dj-database-url
 pytest
 pytest-django
+<<<<<<< HEAD
 pytest-cov
+=======
+pytest-mock
+tzdata
+>>>>>>> 646b2b5bcf8db58a9f4e62d451fbb4b630131bb5
