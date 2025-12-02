@@ -121,5 +121,17 @@ def test_ticket_create_authorized_returns_201(client, django_user_model):
     # если у тебя сейчас в коде 200 вместо 201, поменяй тут ожидаемый код
     assert response.status_code in (200, 201)
 
+@pytest.mark.django_db
+def test_register_success(client):
+    url = reverse("register")  # имя смотри в urls.py
+    data = {
+        "username": "newuser",
+        "password": "pass12345",
+        "email": "test@example.com",
+    }
+    response = client.post(url, data)
+
+    assert response.status_code == 201
+    assert response.json()["user"]["username"] == "newuser"
 
 
