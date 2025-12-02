@@ -122,44 +122,4 @@ def test_ticket_create_authorized_returns_201(client, django_user_model):
     assert response.status_code in (200, 201)
 
 
-# ================= СЛОМАННЫЙ ТЕСТ ДЛЯ ДЕМОНСТРАЦИИ =====================
 
-@pytest.mark.django_db
-def test_broken_ticket_create_always_fails(client, django_user_model):
-    """
-    СЛОМАННЫЙ ТЕСТ ДЛЯ DEMO
-    Использовать ТОЛЬКО когда нужно показать в TeamCity
-    падение сборки из-за тестов.
-
-    Логика заведомо противоречива: мы специально ожидаем неверный код.
-    После защиты/демонстрации этот тест最好 закомментировать или удалить.
-    """
-    user = django_user_model.objects.create_user(
-        username="user_broken",
-        password="pass12345",
-    )
-
-    token_url = reverse("token_obtain")
-    token_response = client.post(
-        token_url,
-        {"username": "user_broken", "password": "pass12345"},
-    )
-    assert token_response.status_code == 200
-    access = token_response.json()["access"]
-
-    client.defaults["HTTP_AUTHORIZATION"] = f"Bearer {access}"
-
-    url = reverse("ticket-list")
-    response = client.post(
-        url,
-        {
-            "ticket_number": "Z9",
-            "movie_title": "Broken",
-            "start_time": "2025-01-01T15:00:00Z",
-            "seat_number": "Z9",
-        },
-    )
-
-    # Заведомо неправильное ожидание: почти наверняка тут будет 200/201,
-    # а мы просим 418 — поэтому тест всегда упадет.
-    assert response.status_code == 418
