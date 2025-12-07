@@ -1,5 +1,4 @@
 #!/bin/bash
-#!/bin/bash
 # scripts/migrate_db_sqlite.sh
 
 # Получаем схемы из SQLite баз
