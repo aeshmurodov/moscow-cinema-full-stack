@@ -1,5 +1,21 @@
 #!/bin/bash
 # back/scripts/backup_db_sqlite.sh - Создание резервной копии SQLite в SQL-формате
+#!/bin/bash
+# Начало вашего скрипта или отдельный шаг в TeamCity
+
+# Устанавливаем sqlite3 если он не установлен
+if ! command -v sqlite3 &> /dev/null; then
+    echo "Установка sqlite3..."
+    # Для Ubuntu/Debian
+    apt-get update && apt-get install -y sqlite3
+    # Или для CentOS/RHEL:
+    # yum install -y sqlite
+fi
+
+# Проверяем установку
+sqlite3 --version || echo "SQLite не установлен" && exit 1
+
+# Далее ваш существующий код...
 
 # Определяем путь к базе данных (можно через переменную окружения или аргумент)
 DB_FILE="${PROD_DB_PATH:-prod.db}"
