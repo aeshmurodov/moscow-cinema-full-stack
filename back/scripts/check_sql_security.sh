@@ -13,6 +13,6 @@ pip install sqlfluff
 
 echo "[INFO] Running SQL security/static analysis..."
 
-sqlfluff lint --dialect sqlite db_schema
+sqlfluff lint --dialect sqlite back/db_schema
 
 echo "[INFO] SQL security check passed!"
