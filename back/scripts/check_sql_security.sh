@@ -7,12 +7,11 @@ python3 -m venv venv
 echo "[INFO] Activating virtual environment..."
 source venv/bin/activate
 
-echo "[INFO] Installing sqlcheck..."
+echo "[INFO] Installing sqlfluff..."
 pip install --upgrade pip
-pip install sqlcheck
+pip install sqlfluff
 
-find back/db_schema -name "*.sql" | xargs sqlcheck -f
-if [ $? -ne 0 ]; then
-    echo "Проверка безопасности SQL не удалась!"
-    exit 1
-fi
+echo "[INFO] Running SQL security/static analysis..."
+sqlfluff lint back/db_schema
+
+echo "[SUCCESS] SQL static analysis passed."
