@@ -36,7 +36,8 @@ EOF
 
 # Check if backup was created
 if [ -s "$FULL_PATH" ]; then
-    echo "Backup created: $FULL_PATH"
+    echo "Backup created successfully: $(realpath "$FULL_PATH")"
+    cat "$FULL_PATH"
 else
     echo "Error creating backup!"
     exit 1
