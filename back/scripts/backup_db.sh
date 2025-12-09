@@ -15,8 +15,8 @@ mkdir -p "$BACKUP_DIR"
 
 echo "=== Создание бэкапа БД $NAME ==="
 
-# Запускаем pg_dump через докер, чтобы не зависеть от версии psql на агенте
-sudo docker run --rm \
+# Запускаем pg_dump через докер, чтобы не зависеть от версии psql на аген
+docker run --rm \
   -e PGPASSWORD="$PASS" \
   postgres:14 \
   pg_dump -h "$HOST" -U "$USER" -d "$NAME" -F p > "$FULL_PATH"
