@@ -1,8 +1,16 @@
 #!/bin/bash
 set -e
 
-apt install python3-sqlcheck
+# Create virtual environment
+python3 -m venv venv
 
-find db_schema -name "*.sql" | xargs sqlcheck -f
-if [ $? -ne 0 ]; then
-    echo "Проверка безопасности SQL не удалась!"
+# Activate venv
+source venv/bin/activate
+
+# Install SQL linter
+pip install sqlfluff
+
+# Run SQL linting
+sqlfluff lint db_schema
+
+echo "SQL lint completed successfully."
