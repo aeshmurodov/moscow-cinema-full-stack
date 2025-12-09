@@ -10,7 +10,7 @@ source venv/bin/activate
 # Install SQL linter
 pip install sqlfluff
 
-# Run SQL linting
-sqlfluff lint back/db_schema
+# Run SQL linting in the current folder using the correct dialect
+sqlfluff lint . --dialect sqlite
 
 echo "SQL lint completed successfully."
