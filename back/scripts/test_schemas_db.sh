@@ -4,7 +4,7 @@ set -e
 # Paths
 TEST_DB="test.db"
 STAGE_DB="stage.db"
-MIGRATIONS_DIR="db_schema/migrations"
+MIGRATIONS_DIR="back/db_schema/migrations"
 SCHEMA_DIR="back/db_schema"
 mkdir -p "$SCHEMA_DIR"
 
