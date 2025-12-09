@@ -11,6 +11,6 @@ source venv/bin/activate
 pip install sqlfluff
 
 # Run SQL linting
-sqlfluff lint db_schema
+sqlfluff lint back/db_schema
 
 echo "SQL lint completed successfully."
