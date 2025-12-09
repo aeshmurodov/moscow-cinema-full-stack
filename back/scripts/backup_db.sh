@@ -1,29 +1,29 @@
 #!/bin/bash
 set -e
 
-# Если переменные не переданы, падаем (или используем дефолт)
-HOST="${STAGE_DB_HOST:-db}"
-USER="${STAGE_DB_USER:-postgres}"
-NAME="${STAGE_DB_NAME:-cinema}"
-PASS="${STAGE_DB_PASSWORD:-postgres}"
-
-BACKUP_DIR="backups"
-FILE_NAME="backup_$(date +%Y%m%d_%H%M%S).sql"
+# If variables are not set, use defaults
+DB_PATH="${STAGE_DB_PATH:-test.db}"           # path to your SQLite DB
+BACKUP_DIR="${BACKUP_DIR:-backups}"           # backup folder
+FILE_NAME="backup_$(date +%Y%m%d_%H%M%S).db" # backup file name
 FULL_PATH="$BACKUP_DIR/$FILE_NAME"
 
+# Ensure backup folder exists
 mkdir -p "$BACKUP_DIR"
 
-echo "=== Создание бэкапа БД $NAME ==="
+echo "=== Creating backup of SQLite DB $DB_PATH ==="
 
-# Запускаем pg_dump через докер, чтобы не зависеть от версии psql на аген
-docker run --rm \
-  -e PGPASSWORD="$PASS" \
-  postgres:14 \
-  pg_dump -h "$HOST" -U "$USER" -d "$NAME" -F p > "$FULL_PATH"
-
-if [ -s "$FULL_PATH" ]; then
-  echo "Бэкап создан: $FULL_PATH"
+# Create backup using sqlite3
+if command -v sqlite3 &> /dev/null; then
+    sqlite3 "$DB_PATH" ".backup '$FULL_PATH'"
 else
-  echo "Ошибка создания бэкапа!"
-  exit 1
+    # Fallback: simple file copy (not 100% safe if DB is in use)
+    cp "$DB_PATH" "$FULL_PATH"
+fi
+
+# Check if backup was created
+if [ -s "$FULL_PATH" ]; then
+    echo "Backup created: $FULL_PATH"
+else
+    echo "Error creating backup!"
+    exit 1
 fi

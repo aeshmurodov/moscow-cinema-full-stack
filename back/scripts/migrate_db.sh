@@ -1,8 +1,14 @@
 #!/bin/bash
 set -e
 
-# Create and activate venv
-python3 -m venv venv
+# Create venv only if it does not exist
+if [ ! -d "venv" ]; then
+    echo "Creating virtual environment..."
+    python3 -m venv venv || { echo "Failed to create venv"; exit 1; }
+else
+    echo "Virtual environment already exists. Skipping creation."
+fi
+
 source venv/bin/activate
 
 # Python script to dump schema
