@@ -14,15 +14,25 @@ FULL_PATH="$BACKUP_DIR/$FILE_NAME"
 # Ensure backup folder exists
 mkdir -p "$BACKUP_DIR"
 
-echo "=== Creating backup of SQLite DB $DB_PATH ==="
+echo "=== Creating backup of SQLite DB $DB_PATH using Python ==="
 
-# Create backup using sqlite3 if available
-if command -v sqlite3 &> /dev/null; then
-    sqlite3 "$DB_PATH" ".backup '$FULL_PATH'"
-else
-    # Fallback: simple file copy (not safe if DB is in use)
-    cp "$DB_PATH" "$FULL_PATH"
-fi
+python3 - <<EOF
+import sqlite3
+import shutil
+import sys
+
+src = "$DB_PATH"
+dst = "$FULL_PATH"
+
+try:
+    conn = sqlite3.connect(src)
+    with sqlite3.connect(dst) as backup_conn:
+        conn.backup(backup_conn)
+    conn.close()
+except Exception as e:
+    print(f"Error creating backup: {e}")
+    sys.exit(1)
+EOF
 
 # Check if backup was created
 if [ -s "$FULL_PATH" ]; then
