@@ -1,10 +1,14 @@
 #!/bin/bash
 set -e
 
-# If variables are not set, use defaults
-DB_PATH="${STAGE_DB_PATH:-test.db}"           # path to your SQLite DB
-BACKUP_DIR="${BACKUP_DIR:-backups}"           # backup folder
-FILE_NAME="backup_$(date +%Y%m%d_%H%M%S).db" # backup file name
+# Path to your SQLite database
+DB_PATH="test.db"
+
+# Backup folder
+BACKUP_DIR="backups"
+
+# Backup file name
+FILE_NAME="backup_$(date +%Y%m%d_%H%M%S).db"
 FULL_PATH="$BACKUP_DIR/$FILE_NAME"
 
 # Ensure backup folder exists
@@ -12,11 +16,11 @@ mkdir -p "$BACKUP_DIR"
 
 echo "=== Creating backup of SQLite DB $DB_PATH ==="
 
-# Create backup using sqlite3
+# Create backup using sqlite3 if available
 if command -v sqlite3 &> /dev/null; then
     sqlite3 "$DB_PATH" ".backup '$FULL_PATH'"
 else
-    # Fallback: simple file copy (not 100% safe if DB is in use)
+    # Fallback: simple file copy (not safe if DB is in use)
     cp "$DB_PATH" "$FULL_PATH"
 fi
 
