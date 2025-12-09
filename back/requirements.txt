@@ -11,4 +11,4 @@ pytest-django
 pytest-cov
 pytest-mock
 tzdata
-sqlcheck
+sqlfluff
