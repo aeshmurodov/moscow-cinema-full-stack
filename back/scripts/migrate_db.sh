@@ -1,24 +1,42 @@
 #!/bin/bash
-# scripts/migrate_db_sqlite.sh
+set -e
 
-# Получаем схемы из SQLite баз
-sqlite3 test.db ".schema" > test_dump.sql
-sqlite3 stage.db ".schema" > stage_dump.sql
+# Create and activate venv
+python3 -m venv venv
+source venv/bin/activate
 
-# Сравниваем, игнорируя комментарии и пустые строки
-if ! diff -I '^--' -I '^$' test_dump.sql stage_dump.sql > /dev/null 2>&1; then
-    echo "Схемы различаются; приступаем к миграции"
-    
-    # Применяем миграции через Flyway
-    # Предполагается, что flyway и драйвер SQLite настроены
+# Python script to dump schema
+cat > dump_schema.py << 'EOF'
+import sqlite3, sys
+
+db = sys.argv[1]
+out = sys.argv[2]
+
+conn = sqlite3.connect(db)
+cur = conn.cursor()
+
+with open(out, "w") as f:
+    for row in cur.execute("SELECT sql FROM sqlite_master WHERE sql NOT NULL"):
+        f.write(row[0] + ";\n")
+
+conn.close()
+EOF
+
+# Generate schema dumps
+python dump_schema.py test.db test_dump.sql
+python dump_schema.py stage.db stage_dump.sql
+
+# Compare schemas
+if ! diff -I '^--' -I '^$' test_dump.sql stage_dump.sql >/dev/null; then
+    echo "Schemas differ; running migration..."
+
     flyway -url=jdbc:sqlite:stage.db \
-           -user= \
-           -password= \
            -locations=filesystem:db_schema/migrations \
            migrate
 else
-    echo "Схемы идентичны, миграция не требуется"
+    echo "Schemas identical; no migration required"
 fi
 
-# Очистка временных файлов
-rm -f test_dump.sql stage_dump.sql
+# Cleanup
+rm test_dump.sql stage_dump.sql
+deactivate
