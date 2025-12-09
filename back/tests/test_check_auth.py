@@ -64,3 +64,4 @@ def test_ticket_create_authorized(client, django_user_model):
     # 4. Проверяем, что билет реально создан и привязан к нашему пользователю
     ticket = Ticket.objects.get(ticket_number="A1")
     assert ticket.user == user
+
