@@ -1,4 +1,6 @@
 #!/bin/bash
+set -e
+
 apt install python3-sqlcheck
 
 find db_schema -name "*.sql" | xargs sqlcheck -f
